@@ -1,7 +1,22 @@
 const grid = document.querySelector('#grid');
+const colorPicker = document.querySelector('#color-picker');
+const modeButtons = document.querySelectorAll('.button');
 const sizeSlider = document.querySelector('#size-slider');
 const sizeSpans = document.querySelectorAll('.size');
+let isDown = false;
+let paintMode = 'color';
+let selectedColor;
+selectColor()
 updateGrid();
+
+function selectColor() {
+	selectedColor = colorPicker.value;
+}
+
+function selectMode() {
+	paintMode = this.dataset.mode;
+	modeButtons.forEach(button => (button !== this) ? button.classList.remove('active') : button.classList.add('active'));
+}
 
 function updateGrid() {
 	const size = sizeSlider.value;
@@ -16,4 +31,17 @@ function updateGrid() {
 	}
 }
 
+function paint(e) {
+	e.preventDefault();
+	if (isDown) {
+		e.target.style.backgroundColor = selectedColor;
+	}
+}
+
+colorPicker.addEventListener('change', selectColor);
+modeButtons.forEach(button => button.addEventListener('click', selectMode))
 sizeSlider.addEventListener('change', updateGrid);
+grid.addEventListener('mousedown', () => isDown = true);
+grid.addEventListener('mouseup', () => isDown = false);
+grid.addEventListener('mouseleave', () => isDown = false);
+grid.addEventListener('mousemove', paint);

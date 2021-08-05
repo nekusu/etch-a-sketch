@@ -14,8 +14,12 @@
 	<h1 id="title">Etch-A-Sketch</h1>
 	<div id="container">
 		<div id="settings">
-			<div><span class="size">16</span> × <span class="size">16</span></div>
-			<input id="size-slider" type="range" min="2" max="64" value="16">
+			<input id="color-picker" type="color" value="#FF0000">
+			<button class="button active" data-mode="color">Color mode</button>
+			<div>
+				<div><span class="size">16</span> × <span class="size">16</span></div>
+				<input id="size-slider" type="range" min="2" max="64" value="16">
+			</div>
 		</div>
 		<div id="grid"></div>
 	</div>
