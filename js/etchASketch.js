@@ -1,22 +1,26 @@
 const grid = document.querySelector('#grid');
-const colorPicker = document.querySelector('#color-picker');
+const colorPickers = document.querySelectorAll('.color-picker');
 const modeButtons = document.querySelectorAll('.button');
 const sizeSlider = document.querySelector('#size-slider');
 const sizeSpans = document.querySelectorAll('.size');
 let isDown = false;
 let paintMode = 'color';
-let selectedColor, lastTile;
-selectColor()
+let colors = { background: colorPickers[0].value, fill: colorPickers[1].value };
+let lastTile;
 updateGrid();
 
 function selectColor() {
-	selectedColor = colorPicker.value;
+	colors[this.name] = this.value;
 }
 
 function randomColor() {
 	const h = Math.floor(Math.random() * 360);
 	const l = Math.floor(Math.random() * 50 + 25);
 	return `hsl(${h}, 100%, ${l}%)`;
+}
+
+function modifyColor([r, g, b], offset) {
+	return `rgb(${r + offset}, ${g + offset}, ${b + offset})`;
 }
 
 function selectMode() {
@@ -32,6 +36,7 @@ function updateGrid() {
 
 	for (let i = 0; i < size ** 2; i++) {
 		const div = document.createElement('div');
+		div.style.backgroundColor = colors.background;
 		div.style.border = '1px solid gray';
 		grid.appendChild(div);
 	}
@@ -39,20 +44,28 @@ function updateGrid() {
 
 function paint(e) {
 	e.preventDefault();
-	if (isDown && e.target !== lastTile) {
+	tile = e.target;
+	if (isDown && tile !== lastTile) {
+		tileRgb = tile.style.backgroundColor.match(/\d+/g).map(Number);
 		switch (paintMode) {
 			case 'color':
-				e.target.style.backgroundColor = selectedColor;
+				tile.style.backgroundColor = colors.fill;
 				break;
 			case 'rainbow':
-				e.target.style.backgroundColor = randomColor();
+				tile.style.backgroundColor = randomColor();
+				break;
+			case 'lighten':
+				tile.style.backgroundColor = modifyColor(tileRgb, 20);
+				break;
+			case 'shading':
+				tile.style.backgroundColor = modifyColor(tileRgb, -20);
 				break;
 		}
-		lastTile = e.target;
+		lastTile = tile;
 	}
 }
 
-colorPicker.addEventListener('change', selectColor);
+colorPickers.forEach(picker => picker.addEventListener('change', selectColor));
 modeButtons.forEach(button => button.addEventListener('click', selectMode))
 sizeSlider.addEventListener('change', updateGrid);
 grid.addEventListener('mousedown', e => {

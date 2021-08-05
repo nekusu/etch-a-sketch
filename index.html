@@ -14,10 +14,15 @@
 	<h1 id="title">Etch-A-Sketch</h1>
 	<div id="container">
 		<div id="settings">
-			<input id="color-picker" type="color" value="#FF0000">
+			<div id="color-pickers">
+				<input class="color-picker" id="bg-color" name="background" type="color" value="#FFFFFF">
+				<input class="color-picker" id="fill-color" name="fill" type="color" value="#FF0000">
+			</div>
 			<div id="buttons">
 				<button class="button active" data-mode="color">Color mode</button>
 				<button class="button" data-mode="rainbow">Rainbow mode</button>
+				<button class="button" data-mode="lighten">Lighten mode</button>
+				<button class="button" data-mode="shading">Shading mode</button>
 			</div>
 			<div>
 				<div><span class="size">16</span> × <span class="size">16</span></div>
