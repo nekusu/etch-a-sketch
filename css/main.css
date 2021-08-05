@@ -53,7 +53,7 @@ body {
 }
 
 #settings > * {
-	margin: 15px 0;
+	margin: 12px 0;
 }
 
 input[type="color"] {
@@ -64,6 +64,7 @@ input[type="color"] {
 
 .button {
 	padding: 8px 18px;
+	margin: 8px 0;
 	font-size: 16px;
 	cursor: pointer;
 	color: white;

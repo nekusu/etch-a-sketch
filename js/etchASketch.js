@@ -5,12 +5,18 @@ const sizeSlider = document.querySelector('#size-slider');
 const sizeSpans = document.querySelectorAll('.size');
 let isDown = false;
 let paintMode = 'color';
-let selectedColor;
+let selectedColor, lastTile;
 selectColor()
 updateGrid();
 
 function selectColor() {
 	selectedColor = colorPicker.value;
+}
+
+function randomColor() {
+	const h = Math.floor(Math.random() * 360);
+	const l = Math.floor(Math.random() * 50 + 25);
+	return `hsl(${h}, 100%, ${l}%)`;
 }
 
 function selectMode() {
@@ -33,15 +39,26 @@ function updateGrid() {
 
 function paint(e) {
 	e.preventDefault();
-	if (isDown) {
-		e.target.style.backgroundColor = selectedColor;
+	if (isDown && e.target !== lastTile) {
+		switch (paintMode) {
+			case 'color':
+				e.target.style.backgroundColor = selectedColor;
+				break;
+			case 'rainbow':
+				e.target.style.backgroundColor = randomColor();
+				break;
+		}
+		lastTile = e.target;
 	}
 }
 
 colorPicker.addEventListener('change', selectColor);
 modeButtons.forEach(button => button.addEventListener('click', selectMode))
 sizeSlider.addEventListener('change', updateGrid);
-grid.addEventListener('mousedown', () => isDown = true);
+grid.addEventListener('mousedown', e => {
+	e.preventDefault();
+	isDown = true;
+});
 grid.addEventListener('mouseup', () => isDown = false);
 grid.addEventListener('mouseleave', () => isDown = false);
 grid.addEventListener('mousemove', paint);
