@@ -6,6 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
 	<link rel="stylesheet" href="css/main.css">
 	<title>Etch-A-Sketch</title>
 </head>
@@ -19,14 +20,19 @@
 				<input class="color-picker" id="fill-color" name="fill" type="color" value="#FF0000">
 			</div>
 			<div id="buttons">
-				<button class="button active" data-mode="color">Color mode</button>
-				<button class="button" data-mode="rainbow">Rainbow mode</button>
-				<button class="button" data-mode="lighten">Lighten mode</button>
-				<button class="button" data-mode="shading">Shading mode</button>
+				<button class="button mode active" data-mode="color">Color mode</button>
+				<button class="button mode" data-mode="rainbow">Rainbow mode</button>
+				<button class="button mode" data-mode="lighten">Lighten mode</button>
+				<button class="button mode" data-mode="shading">Shading mode</button>
+				<button class="button mode" data-mode="eraser">Eraser mode</button>
 			</div>
 			<div>
 				<div><span class="size">16</span> × <span class="size">16</span></div>
 				<input id="size-slider" type="range" min="2" max="64" value="16">
+			</div>
+			<div>
+				<button class="button" id="grid-toggle"><span class="material-icons-round">grid_on</span></button>
+				<button class="button" id="clear"><span class="material-icons-round">delete</span></button>
 			</div>
 		</div>
 		<div id="grid"></div>
