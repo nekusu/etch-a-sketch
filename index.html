@@ -12,12 +12,13 @@
 </head>
 
 <body>
-	<h1 id="title">Etch-A-Sketch</h1>
+	<h1 class="box" id="title">Etch-A-Sketch</h1>
 	<div id="container">
-		<div id="settings">
+		<div class="box" id="settings">
 			<div id="color-pickers">
-				<input class="color-picker" id="bg-color" name="background" type="color" value="#FFFFFF">
-				<input class="color-picker" id="fill-color" name="fill" type="color" value="#FF0000">
+				<input class="color-picker" id="bg-color" name="background" type="color" value="#8300FF"
+					title="Background">
+				<input class="color-picker" id="fill-color" name="fill" type="color" value="#92FF00" title="Fill">
 			</div>
 			<div id="buttons">
 				<button class="button mode active" data-mode="color">Color mode</button>
@@ -31,11 +32,18 @@
 				<input id="size-slider" type="range" min="2" max="64" value="16">
 			</div>
 			<div>
-				<button class="button" id="grid-toggle"><span class="material-icons-round">grid_on</span></button>
-				<button class="button" id="clear"><span class="material-icons-round">delete</span></button>
+				<button class="button" id="grid-toggle" title="Toggle grid"><span
+						class="material-icons-round">grid_on</span></button>
+				<button class="button" id="clear" title="Clear grid"><span
+						class="material-icons-round">delete</span></button>
 			</div>
 		</div>
-		<div id="grid"></div>
+		<div id="grid-container">
+			<div class="grid-lines" id="grid"></div>
+		</div>
 	</div>
+	<a class="box" id="github" href="https://github.com/nekusu" target="_blank" title="Check my GitHub!">nekusu<img
+			src="https://pngimg.com/uploads/github/github_PNG80.png" alt="GitHub">
+	</a>
 	<script type="text/javascript" src="js/etchASketch.js"></script>
 </body>

@@ -1,19 +1,26 @@
 const grid = document.querySelector('#grid');
+const gridContainer = document.querySelector('#grid-container');
 const colorPickers = document.querySelectorAll('.color-picker');
 const modeButtons = document.querySelectorAll('.button.mode');
 const sizeSlider = document.querySelector('#size-slider');
 const sizeSpans = document.querySelectorAll('.size');
 const gridToggle = document.querySelector('#grid-toggle');
 const clearButton = document.querySelector('#clear');
+const title = document.querySelector('#title');
 let isDown = false;
 let paintMode = 'color';
 let colors = { background: colorPickers[0].value, fill: colorPickers[1].value };
 let gridLines = true;
-let lastTile;
+let rainbowCounter = 0;
+let lastGridRotation = 0;
+let lastTile, rainbowTitleInterval;
+title.style.color = colors.fill;
 updateGrid();
+resizeGrid();
 
 function selectColor() {
 	colors[this.name] = this.value;
+	title.style.color = colors.fill;
 }
 
 function randomColor() {
@@ -26,14 +33,27 @@ function modifyColor([r, g, b], offset) {
 	return `rgb(${r + offset}, ${g + offset}, ${b + offset})`;
 }
 
+function rainbowTitle() {
+	if (paintMode === 'rainbow') {
+		rainbowTitleInterval = setInterval(() => title.style.color = `hsl(${rainbowCounter++}, 100%, 50%)`, 5);
+	} else {
+		clearInterval(rainbowTitleInterval);
+		title.style.color = colors.fill;
+	}
+}
+
 function selectMode() {
 	paintMode = this.dataset.mode;
 	modeButtons.forEach(button => (button !== this) ? button.classList.remove('active') : button.classList.add('active'));
+	rainbowTitle();
+}
+
+function previewGridSize() {
+	sizeSpans.forEach(span => span.textContent = sizeSlider.value);
 }
 
 function updateGrid() {
 	const size = sizeSlider.value;
-	sizeSpans.forEach(span => span.textContent = size);
 	grid.innerHTML = '';
 	grid.style.grid = `repeat(${size}, 1fr) / repeat(${size}, 1fr)`;
 
@@ -41,7 +61,6 @@ function updateGrid() {
 		const tile = document.createElement('div');
 		tile.classList.add('tile');
 		tile.style.backgroundColor = colors.background;
-		tile.style.border = '1px solid ' + (gridLines ? 'gray' : 'transparent');
 		grid.appendChild(tile);
 	}
 }
@@ -50,7 +69,8 @@ function paint(e) {
 	e.preventDefault();
 	tile = e.target;
 	if (isDown && tile !== lastTile) {
-		tileRgb = tile.style.backgroundColor.match(/\d+/g).map(Number);
+		tileRgb = tile.style.backgroundColor.match(/\d+/g);
+		if (tileRgb) tileRgb = tileRgb.map(Number);
 		switch (paintMode) {
 			case 'color':
 				tile.style.backgroundColor = colors.fill;
@@ -74,19 +94,26 @@ function paint(e) {
 function toggleGridLines() {
 	gridLines = !gridLines;
 	gridToggle.firstElementChild.innerHTML = gridLines ? 'grid_on' : 'grid_off';
-	for (let tile of grid.children) {
-		tile.style.border = '1px solid ' + (gridLines ? 'gray' : 'transparent');
-	}
+	gridLines ? grid.classList.add('grid-lines') : grid.classList.remove('grid-lines');
 }
 
 function clearGrid() {
 	for (let tile of grid.children) {
 		tile.style.backgroundColor = colors.background;
 	}
+	lastGridRotation += 180;
+	grid.style.transform = `rotate(${lastGridRotation / 2}deg) rotateX(${lastGridRotation}deg)`;
+	grid.classList.remove('grid-lines');
+}
+
+function resizeGrid() {
+	gridRect = gridContainer.getBoundingClientRect();
+	gridContainer.style.height = `${gridRect.width}px`;
 }
 
 colorPickers.forEach(picker => picker.addEventListener('change', selectColor));
 modeButtons.forEach(button => button.addEventListener('click', selectMode))
+sizeSlider.addEventListener('input', previewGridSize);
 sizeSlider.addEventListener('change', updateGrid);
 gridToggle.addEventListener('click', toggleGridLines);
 clearButton.addEventListener('click', clearGrid);
@@ -94,6 +121,16 @@ grid.addEventListener('mousedown', e => {
 	e.preventDefault();
 	isDown = true;
 });
-grid.addEventListener('mouseup', () => isDown = false);
+grid.addEventListener('mouseup', e => {
+	paint(e);
+	lastTile = null;
+	isDown = false;
+});
 grid.addEventListener('mouseleave', () => isDown = false);
 grid.addEventListener('mousemove', paint);
+grid.addEventListener('transitionend', e => {
+	if (e.propertyName === 'transform' && gridLines) {
+		grid.classList.add('grid-lines');
+	}
+});
+window.addEventListener('resize', resizeGrid);
